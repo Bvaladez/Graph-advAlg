@@ -40,13 +40,13 @@ void Graph::DFS(int v, int vertices){
 
 }
 
-// adds edge from u to v and v to u
+// adds edge from u to v and v to u counting FROM 1
 void Graph::addUndirectedEdge(int u, int v){
 	mGraph[u - 1][v - 1] = 1;
 	mGraph[v - 1][u - 1] = 1;
 }
 
-// adds edge from u to v
+// adds edge from u to v COUNTING FROM 1
 void Graph::addEdge(int u, int v){
 	mGraph[u - 1][v - 1] = 1;
 }
