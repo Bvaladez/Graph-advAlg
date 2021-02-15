@@ -1,39 +1,46 @@
 #include "graph.h"
 #include <iostream>
 #include <iomanip>
+#include <fstream>
+#include <sstream>
 
 Graph::Graph(int v){
 	 int i, j;
    for(i = 0; i < v; i++) {
+		 mGraph.push_back(std::vector<int>());
       for(j = 0; j < v; j++) {
-				mGraph[i][j] = 0;
+				mGraph[i].push_back(0);
       }
    }
 }
 
 void Graph::explore(int v, int vertices){
+	int components = 1;
 	for (int i = 0; i < vertices; i++){
-		mVisited[i] = 0;
-		mPreVisit[i] = 0;
-		mPostVisit[i] = 0;
+		mVisited.push_back(0);
+		mPreVisit.push_back(0);
+		mPostVisit.push_back(0);
+		mCC.push_back(0);
 	}
-	DFS(v, vertices);
+	DFS(v, vertices, components);
 	for (int j = 0; j < vertices; j++){
 		if (mVisited[j] == 0){
-			DFS(j, vertices);	
+			components++;
+			DFS(j, vertices, components);	
 		}
 	}
 
 }
 
-void Graph::DFS(int v, int vertices){
-	static int prePost = 1;
+void Graph::DFS(int v, int vertices, int components){
+	//static int prePost = 1;
 	mVisited[v] = 1;
 	mPreVisit[v] = prePost++; 
+	mCC[v] = components;
 
 	for (int j = 0; j < vertices; j++){
 		if( mVisited[j] == false && mGraph[v][j] == 1 ){
-			DFS(j, vertices);
+			DFS(j, vertices, components);
 		}
 	}
 	mPostVisit[v] = prePost++;
@@ -73,56 +80,56 @@ void Graph::displayMatrix(int v) {
 void Graph::outputDFS(int vertices){
 	for (int i = 0; i < vertices; i++){
 
-		std::cout << "vert: " << i + 1 << " Pre: " << mPreVisit[i] << " Post: " << mPostVisit[i] << std::endl;
+		std::cout << i + 1 << " " << 
+		mPreVisit[i] << " " << 
+		mPostVisit[i] << " " << 
+		mCC[i] << std::endl;
 	}
 }
 
 int main(){
-// This  wont work unlesss starting at 1
-//	Graph graph(VERTICES);
-//	graph.addUndirectedEdge(0, 1);
-//	graph.addUndirectedEdge(0, 2);
-//	graph.addUndirectedEdge(0, 3);
-//	graph.addUndirectedEdge(0, 4);
-//	graph.addUndirectedEdge(0, 5);
-//	graph.addUndirectedEdge(0, 6);
-//	graph.addUndirectedEdge(0, 8);
-//	graph.addUndirectedEdge(0, 9);
-//	graph.addUndirectedEdge(0, 10);
-//	graph.addUndirectedEdge(0, 11);
-//	graph.addUndirectedEdge(1, 2);
-//	graph.addUndirectedEdge(2, 3);
-//	graph.addUndirectedEdge(3, 4);
-//	graph.addUndirectedEdge(4, 5);
-//	graph.addUndirectedEdge(5, 6);
-//	graph.addUndirectedEdge(5, 7);
-//	graph.addUndirectedEdge(6, 7);
-//	graph.addUndirectedEdge(6, 8);
-//	graph.addUndirectedEdge(6, 12);
-//	graph.addUndirectedEdge(8, 12);
-//	graph.addUndirectedEdge(8, 9);
-//	graph.addUndirectedEdge(8, 10);
-//	graph.addUndirectedEdge(9, 10);
-//	graph.addUndirectedEdge(10, 11);
-	//graph.displayMatrix(VERTICES);
-	//graph.DFS(12, VERTICES);
-	int gOneVerts = 10;
-	Graph graph1(gOneVerts);
-	graph1.addEdge(1, 5);
-	graph1.addEdge(1, 2);
-	graph1.addEdge(3, 1);
-	graph1.addEdge(4, 3);
-	graph1.addEdge(6, 4);
-	graph1.addEdge(6, 8);
-	graph1.addEdge(8, 9);
-	graph1.addEdge(9, 7);
-	graph1.addEdge(7, 2);
-	graph1.addEdge(10, 6);
-	graph1.addEdge(3, 10);
-	graph1.addEdge(7, 8);
-	graph1.displayMatrix(gOneVerts);
-	graph1.explore(0, gOneVerts);
-	graph1.outputDFS(gOneVerts);
+	//for (int i = 1; i < 5; i++){
+		std::ifstream mFin;
+		std::stringstream ss;
+		int u, v, w;
+		ss << "graph-1000-" << 4 << ".txt";
+		mFin.open(ss.str());
+		ss.clear();
+		if(!mFin.is_open()){
+			std::cout << "error opening file" << std::endl;
+			exit(0);
+		}
+		int verts;
+		mFin >> verts;
+		Graph g(verts);
+
+		while(mFin >> u >> v >> w){
+			g.addEdge(u,v);
+		}
+		g.explore(0, verts);
+		g.outputDFS(verts);
+		mFin.close();
+	//}
+
+
+
+//	int gOneVerts = 10;
+//	Graph graph1(gOneVerts);
+//	graph1.addEdge(1, 5);
+//	graph1.addEdge(1, 2);
+//	graph1.addEdge(3, 1);
+//	graph1.addEdge(4, 3);
+//	graph1.addEdge(6, 4);
+//	graph1.addEdge(6, 8);
+//	graph1.addEdge(8, 9);
+//	graph1.addEdge(9, 7);
+//	graph1.addEdge(7, 2);
+//	graph1.addEdge(10, 6);
+//	graph1.addEdge(3, 10);
+//	graph1.addEdge(7, 8);
+//	graph1.displayMatrix(gOneVerts);
+//	graph1.explore(0, gOneVerts);
+//	graph1.outputDFS(gOneVerts);
 
 
 

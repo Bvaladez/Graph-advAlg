@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 #define VERTICES 13
 
@@ -17,13 +18,15 @@ public:
 	void explore(int v, int vertices);
 
 	// takes the the vertex number to start DFS on
-	void DFS(int v, int vertices);
+	void DFS(int v, int vertices, int components);
 
 private:
-
-	int mGraph[VERTICES][VERTICES];
-	int mVisited[VERTICES];
-	int mPreVisit[VERTICES];
-	int mPostVisit[VERTICES];
+	std::vector<std::vector<int>> mGraph;
+	int prePost = 1;
+	//int mGraph[VERTICES][VERTICES];
+	std::vector<int> mVisited;
+	std::vector<int> mPreVisit;
+	std::vector<int> mPostVisit;
+	std::vector<int> mCC;
 
 };
